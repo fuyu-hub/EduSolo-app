@@ -164,8 +164,12 @@ def classificar_uscs(dados: ClassificacaoUSCSInput) -> ClassificacaoUSCSOutput:
 def _classificar_finos_carta(ll: float, ip: float) -> Tuple[Optional[bool], Optional[str]]:
     """
     Classifica a fração fina (M ou C) usando a Carta de Plasticidade de Casagrande.
-    Retorna (acima_linha_A, tipo_fino).
-    Retorna (None, None) se cair na zona hachurada ou dados inválidos.
+    Retorna uma tupla ``(acima_linha_A, tipo_fino)`` em que ``acima_linha_A`` indica se o ponto
+    está acima da linha A (``False`` significa que o ponto está abaixo da linha A) e
+    ``tipo_fino`` é "M" para siltes ou solos enquadrados abaixo da linha A/IP<4 e "C" para
+    argilas.
+    Retorna ``(None, None)`` apenas quando os dados de entrada são inválidos (valores
+    negativos).
     """
     if ll < 0 or ip < 0: return None, None # Valores não podem ser negativos
 
@@ -174,9 +178,9 @@ def _classificar_finos_carta(ll: float, ip: float) -> Tuple[Optional[bool], Opti
 
     # Verifica zona hachurada (IP < 4 OU IP < IP_linha_A)
     # A zona CL-ML (4 <= IP <= 7 e abaixo da linha A) é tratada separadamente pela classificação dupla em solos grossos,
-    # mas para solos finos, cai abaixo da linha A e é M (ML/MH) ou O (OL/OH).
+    # mas para solos finos, cai abaixo da linha A e é classificada como silte (M) nesta função.
     if ip < 4 or ip < ip_linha_A:
-        return False, "M" # Assume Silte (M) ou Orgânico (O) se abaixo da linha A ou IP<4
+        return False, "M"  # Silte (M) quando abaixo da linha A ou IP < 4
 
     # Se chegou aqui, está acima ou na linha A e IP >= 4
     # Se está na linha A (IP == IP_linha_A) ou acima, classifica como Argila (C)
