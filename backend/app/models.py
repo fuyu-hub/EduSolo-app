@@ -159,10 +159,44 @@ class CargaPontual(BaseModel):
     y: float = Field(0.0, description="Coordenada Y da carga na superfície")
     P: float = Field(..., gt=0, description="Magnitude da carga pontual (ex: kN)")
 
-# Adicionar outros tipos de carga (Retangular, Circular, Faixa) aqui conforme forem implementados
-# class CargaRetangular(BaseModel): ...
-# class CargaCircular(BaseModel): ...
-# class CargaFaixa(BaseModel): ...
+# --- Modelos Módulo 5: Recalque por Adensamento Primário ---
+
+class RecalqueAdensamentoInput(BaseModel):
+    """ Dados de entrada para o cálculo do Recalque por Adensamento Primário """
+    espessura_camada: float = Field(..., gt=0, description="Espessura inicial da camada compressível (H0) em metros")
+    indice_vazios_inicial: float = Field(..., gt=0, description="Índice de vazios inicial (e0) no centro da camada")
+    Cc: float = Field(..., gt=0, description="Índice de Compressão (adimensional)")
+    Cr: float = Field(..., gt=0, description="Índice de Recompressão (ou Expansão, Cs) (adimensional)")
+    tensao_efetiva_inicial: float = Field(..., gt=0, description="Tensão efetiva vertical inicial no centro da camada (σ'v0) em kPa")
+    tensao_pre_adensamento: float = Field(..., gt=0, description="Tensão de pré-adensamento no centro da camada (σ'vm ou σ'p) em kPa")
+    acrescimo_tensao: float = Field(..., ge=0, description="Acréscimo de tensão efetiva vertical no centro da camada (Δσ'v) em kPa")
+
+class RecalqueAdensamentoOutput(BaseModel):
+    """ Resultados do cálculo de Recalque por Adensamento Primário """
+    recalque_total_primario: Optional[float] = Field(None, description="Recalque total calculado (ΔH) em metros")
+    deformacao_volumetrica: Optional[float] = Field(None, description="Deformação volumétrica vertical (εv) em decimal")
+    tensao_efetiva_final: Optional[float] = Field(None, description="Tensão efetiva vertical final (σ'vf) em kPa")
+    estado_adensamento: Optional[str] = Field(None, description="Classificação (Normalmente Adensado, Pré-Adensado)")
+    RPA: Optional[float] = Field(None, description="Razão de Pré-Adensamento (OCR)")
+    erro: Optional[str] = None
+
+# --- Modelos Módulo 6: Tempo de Adensamento ---
+
+class TempoAdensamentoInput(BaseModel):
+    """ Dados de entrada para análise do Tempo de Adensamento """
+    recalque_total_primario: float = Field(..., gt=0, description="Recalque total primário (ΔH) calculado previamente (metros)")
+    coeficiente_adensamento: float = Field(..., gt=0, description="Coeficiente de adensamento vertical (Cv) (ex: m²/ano ou m²/s)")
+    altura_drenagem: float = Field(..., gt=0, description="Maior percurso da água até uma camada drenante (Hd) (metros)")
+    tempo: Optional[float] = Field(None, ge=0, description="Tempo decorrido desde a aplicação da carga (mesma unidade de tempo de Cv)")
+    grau_adensamento_medio: Optional[float] = Field(None, ge=0, le=100, description="Grau de adensamento médio desejado (Uz) em %")
+
+class TempoAdensamentoOutput(BaseModel):
+    """ Resultados da análise de Tempo de Adensamento """
+    tempo_calculado: Optional[float] = Field(None, description="Tempo calculado para atingir Uz (mesma unidade de tempo de Cv)")
+    recalque_no_tempo: Optional[float] = Field(None, description="Recalque ocorrido no tempo t (metros)")
+    grau_adensamento_medio_calculado: Optional[float] = Field(None, description="Grau de adensamento médio (Uz) atingido no tempo t (%)")
+    fator_tempo: Optional[float] = Field(None, description="Fator tempo (Tv) adimensional")
+    erro: Optional[str] = None
 
 class AcrescimoTensoesInput(BaseModel):
     """ Dados de entrada para cálculo de acréscimo de tensões """
