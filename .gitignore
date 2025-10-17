@@ -1,0 +1,84 @@
+# Arquivo .gitignore para o projeto EduSolo
+
+# --- Geral ---
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários
+*.tmp
+*~
+
+# --- Configurações de IDE/Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Backend Python (FastAPI) ---
+# Ambiente Virtual
+backend/venv/
+backend/.venv/ # Nome alternativo comum
+
+# Bytecode e caches Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos de distribuição/build Python (ex: PyInstaller, setuptools)
+backend/build/
+backend/dist/
+backend/*.spec
+*.egg-info/
+.eggs/
+
+# Relatórios de Cobertura
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+
+# Arquivos de ambiente (contêm segredos!)
+backend/.env
+.env
+
+# --- Frontend (React + Tauri) ---
+# Dependências Node
+frontend/node_modules/
+
+# Arquivos de build React (Vite/CRA)
+frontend/dist/
+frontend/build/
+frontend/.output/
+frontend/.vite/
+
+# Logs do frontend
+frontend/logs
+frontend/*.log
+
+# Artefatos do Tauri
+frontend/src-tauri/target/
+frontend/src-tauri/Cargo.lock  # Geralmente é bom versionar, mas ignore se preferir
+frontend/src-tauri/build/
+frontend/src-tauri/node_modules/
+
+# Arquivos específicos do Next.js (se usar no futuro)
+# frontend/.next/
+# frontend/out/
+
+# Arquivos de teste frontend
+frontend/coverage/
+
+# --- Outros ---
+# Bases de dados locais (se usar SQLite fora do versionamento)
+# *.db
+# *.sqlite
+# *.sqlite3
